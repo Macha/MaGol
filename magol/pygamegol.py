@@ -63,16 +63,17 @@ class PyGameGol:
                     self.board.run_turn()
                     self.draw_grid()
                     ticks = 0
-            if self.slow:
-                clock.tick(50)
+            clock.tick(50)
 
     def handle_mouse_click(self, x, y):
+        """Handle a mouse click on the grid and toggles cells as needed."""
         grid_x = x // self.box_size
         grid_y = y // self.box_size
         self.board.toggle_cell(grid_y, grid_x)
         self.draw_grid()
 
     def draw_grid(self):
+        """Redraw the grid in it's entirety."""
         self.screen.fill((0, 0, 0))
         for row in range(0, self.board.size):
             for col in range(0, self.board.size):

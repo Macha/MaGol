@@ -3,6 +3,7 @@ import random
 import rlereader
 
 class Board:
+    """Handles the status of all cells."""
 
     def __init__(self, size):
         self.size = size
@@ -11,11 +12,13 @@ class Board:
         self.furthest_row = 0
 
     def run_turns(self, num_turns):
+        """Run a the simulator for a number of turns."""
         while num_turns > 0:
             self.run_turn()
             num_turns -= 1
 
     def run_turn(self):
+        """Run a single turn of the simulator."""
         new_grid = self.make_blank_grid()
         for row in range(0, self.size):
             for col in range(0, self.size):
@@ -24,17 +27,22 @@ class Board:
         self.grid = new_grid
 
     def toggle_cell(self, row, col):
+        """Toggle the dead or alive status of a single cell."""
         self.grid[row][col] = not self.grid[row][col]
 
     def check_furthest(self, row, col):
+        """Check the furthest processed cell against this one and update if we
+        near the edge."""
         if row + 1 >= self.furthest_row:
             self.furthest_row = row + 2
         if col + 1 >= self.furthest_col:
             self.furthest_col = col + 2
           
-
     def get_cell_life(self, row, col):
-        living_neighbours = self.count_active_neighbours(row, col)
+        """Return whether a given cell should become dead or alive.
+
+        This may update the processed cell boundaries if neccessary."""
+        living_neighbours = self.count_living_neighbours(row, col)
         if self.grid[row][col]:
             if living_neighbours in [2, 3]:
                 return True
@@ -48,6 +56,8 @@ class Board:
             return False
 
     def check_cell(self, row, col):
+        """Return whether the cell is dead or alive for the current
+        generation."""
         if row < 0:
             row = self.size - 1
         if row > self.size - 1:
@@ -60,7 +70,8 @@ class Board:
 
         return self.grid[row][col]
 
-    def count_active_neighbours(self, row, col):
+    def count_living_neighbours(self, row, col):
+        """Find how many neighnours of a given cell are alive."""
         active_count = 0
         to_check = [
             (row - 1, col - 1), # Top left
@@ -80,6 +91,7 @@ class Board:
         return active_count
 
     def make_blank_grid(self):
+        """Returns a blank grid for future use."""
         grid = []   
         for row in range(0, self.size):
             grid.append([])
@@ -89,6 +101,9 @@ class Board:
         return grid
 
     def load_rle_into_grid(self, rle):
+        """Loads a RLE representation of a playing field into the grid.
+
+        rle should be a file like object."""
         reader = rlereader.GRLEReader()
         data = reader.read_rle(rle)
 
@@ -124,6 +139,7 @@ class Board:
             current_token += 1
     
     def randomise_grid(self):
+        """Change every cell in a grid to random dead or alive state."""
         for row in range(0, self.size):
             for col in range(0, self.size):
                 self.grid[row][col] = random.choice([True, False])
@@ -132,4 +148,5 @@ class Board:
         self.furthest_col = self.size - 1
     
     def blank_grid(self):
+        """Replaces the current grid with a blank grid."""
         self.grid = self.make_blank_grid()    
