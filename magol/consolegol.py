@@ -9,7 +9,7 @@ import sys
 class GameOfLifeConsole:
 
     def __init__(self):
-        print('Welcome to PyGol')
+        print('Welcome to MaGol')
         print('What board size do you want?')
 
         board_size = raw_input()
